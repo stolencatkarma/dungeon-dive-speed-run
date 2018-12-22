@@ -1,0 +1,19 @@
+seeds determine layout
+dungeon dive speed run game
+classes determine style
+-speed - overall movement speed.
+-intelligence - resource regen (rage, mana, health?)
+-strength - health pool
+
+locked weapons and spells
+
+smart monster moves
+
+2 types of levels.
+ combat
+ boss - traps with stationary bosses
+
+score is based on total turns to kill end boss.
+ fun right?
+
+
