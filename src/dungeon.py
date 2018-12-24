@@ -45,7 +45,7 @@ class Room:
         self.depth = depth
 
         # A room is part of a dungeon with exits to other rooms.
-        # the player only can move in a 5x5 area and has to think tactically to defeat monsters in the least amount of moves.
+        # the player only can move in a 5x5 area and has to think tactically to defeat or avoid monsters in the least amount of moves.
         for i in range(7):
             for j in range(7):
                 _tile = Tile(i, j)

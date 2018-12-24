@@ -2,6 +2,7 @@ import pyglet
 import glooey
 from src.dungeon import DungeonLevel
 from src.player import Player
+import random
 
 for folder in [
     # load tileset resources
@@ -25,6 +26,7 @@ for folder in [
     print("Loaded resource folder", folder)
 pyglet.resource.reindex()
 
+
 class CustomBackground(glooey.Background):
     custom_center = pyglet.resource.texture('center.png')
     custom_top = pyglet.resource.texture('top.png')
@@ -36,14 +38,36 @@ class CustomBackground(glooey.Background):
     custom_bottom_left = pyglet.resource.image('bottom_left.png')
     custom_bottom_right = pyglet.resource.image('bottom_right.png')
 
+class StatsBox(glooey.Bin):
+    def __init__(self):
+        super().__init__()
+        self.grid = glooey.Grid(0,0,0,0)
+        self.grid[0,0] = glooey.dialogs.Label('hp')
+        self.grid[1,0] = glooey.dialogs.Label('str')
+        self.grid[2,0] = glooey.dialogs.Label('spd')
+        self.grid[3,0] = glooey.dialogs.Label('int')
+        self.grid[4,0] = glooey.dialogs.Label('res')
+        self.grid[5,0] = glooey.dialogs.Label('tgt')
+        self.add(self.grid)
+
+class SkillsBox(glooey.Bin):
+    def __init__(self, skill1, skill2):
+        super().__init__()
+        self.grid = glooey.Grid(0,0,0,0)
+        self.grid[0,0] = skill1.image
+        self.grid[0,1] = skill2.image
+
+        self.add(self.grid)
+        
+
 
 class mainWindow(glooey.containers.Stack):
     def __init__(self):
         super().__init__()
-        
+
         self.current_level = 0
-        self.seed = hash('0000000000000000')
-        print(self.seed)
+        self.seed = random.randint(1000000000000000,9000000000000000)
+        print('using seed', str(self.seed))
         self.current_room_x = 2
         self.current_room_y = 2
         self.current_room = None
@@ -57,29 +81,42 @@ class mainWindow(glooey.containers.Stack):
             if room.x == self.current_room_x:
                 if room.y == self.current_room_y:
                     self.current_room = room
-        
+
         # insert our custom Background into an OrderedGroup
         self.insert(CustomBackground(), 0)
-        self.bg_map_grid = glooey.Grid(0,0,0,0)
+
+        # init and fill mapgrids.
+        self.bg_map_grid = glooey.Grid(0, 0, 0, 0)
         for tile in self.current_room.tiles:
-            self.bg_map_grid[tile.x, tile.y] = tile.bg
-        self.fg_map_grid = glooey.Grid(0,0,0,0)
+            # draw bg of current room
+            self.bg_map_grid[tile.x, tile.y] = glooey.Image(tile.bg)
+
+        self.fg_map_grid = glooey.Grid(0, 0, 0, 0)
         for tile in self.current_room.tiles:
-            self.fg_map_grid[tile.x, tile.y] = tile.fg
+            # draw fg of current room
+            self.fg_map_grid[tile.x, tile.y] = glooey.Image(tile.fg)
+
         # insert mapgrids into our ordered groups.
         self.insert(self.bg_map_grid, 1)
         self.insert(self.fg_map_grid, 2)
 
-        # draw bg of current room
+        # draw monsters and player on a grid
+        self.creature_map_grid = glooey.Grid(0, 0, 0, 0)
+        for creature in self.current_room.characters:
+            self.creature_map_grid[creature.x, creature.y] = creature.image
         
-        # draw fg of current room
-        # draw monsters in current room
-        # draw the player 
+        self.insert(self.creature_map_grid, 3)
+
         # draw player stats
+        self.stats_box = StatsBox()
+        self.insert(self.stats_box, 4)
+
         # draw player skills
-    
+        # skill1, skill2
+
     def redraw(self):
         pass
+
 
 class Main:
     def __init__(self):
@@ -93,6 +130,7 @@ class Main:
         self.gui = glooey.Gui(self.window)
 
         self.gui.add(mainWindow())
+
 
 if __name__ == "__main__":
 

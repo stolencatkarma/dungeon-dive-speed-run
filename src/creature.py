@@ -7,6 +7,7 @@ class Creature:
         self.skill1 = None
         self.skill2 = None
         self.target = None
+        self.image = None
 
     def find_target(self):
         # if player is near make the player the target.
